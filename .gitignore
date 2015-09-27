@@ -1,0 +1,33 @@
+# ----------- reveal.js
+reveal.js*
+*.zip
+
+# ----------- temporary files
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ----------- compilation output
+
+bin
+pkg
+build
+target
+logs
+*.log
+*.html
+*.exe
+src/05-web/web
+
+# ----------- workspaces
+
+*.sublime-workspace
+.idea/workspace.xml
+.idea/artifacts
+.idea/libraries
+.idea/uiDesigner.xml

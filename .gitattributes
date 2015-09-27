@@ -1,0 +1,13 @@
+# https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
+
+*.sh eol=lf
+*.go eol=lf
+*.sol eol=lf
+*.sol1 eol=lf
+*.sol2 eol=lf
+*.sol3 eol=lf
+*.sol4 eol=lf
+*.sol5 eol=lf
+*.src eol=lf
+*.js eol=lf
+passwd eol=lf

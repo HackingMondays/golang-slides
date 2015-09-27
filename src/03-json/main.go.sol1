@@ -1,0 +1,10 @@
+package main
+
+import "regexp"
+
+func main() {}
+
+func Hello(rawJSON string) string {
+	exp := regexp.MustCompile(`["]DE["]:["]([A-Za-z ]+)`)
+	return exp.FindStringSubmatch(rawJSON)[1]
+}
