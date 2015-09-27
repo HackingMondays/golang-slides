@@ -1,6 +1,6 @@
 # Conclusion
 
-## Récapitulatif
+## Recapitulatif
 
 * concurrence avec `go` et `chan`
 * package `testing`
