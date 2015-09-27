@@ -8,7 +8,7 @@ type Speaker interface {
 
 type EnglishSpeaker struct{}
 type GermanSpeaker struct {
-	timeOfDay string
+	greeting string
 }
 
 // TODO: Implémenter l'interface Speaker pour les deux types

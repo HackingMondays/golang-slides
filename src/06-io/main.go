@@ -31,8 +31,8 @@ func grep(pattern, fileName string) {
 	defer file.Close()
 
 	scanner := bufio.  // TODO: create a new scanner
-	for 			   // TODO: advance scanner to next token
-		line := 	   // TODO: return most recent token
+	for                // TODO: advance scanner to next token
+		line :=    // TODO: return most recent token
 		if exp.MatchString(line) {
 			fmt.Println(line)
 		}
