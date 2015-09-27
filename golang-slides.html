@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+        <meta name="author" content="Daniel TISCHER"/>
+            <title>Atelier GO</title>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="reveal.js/css/reveal.css"/>
+    <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+	    var link = document.createElement( 'link' );
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match( /print-pdf/gi ) ? "reveal.js/css/print/pdf.css" : "reveal.js/css/print/paper.css";
+		document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+            <link rel="stylesheet" href="css/hacking.css"/>
+        
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+        </head>
+<body>
+<div class="reveal">
+    <div class="slides">
+                <section>
+            <h1 class="title">Atelier GO</h1>
+                                    <h2 class="author">Daniel TISCHER</h2>
+                        <h3 class="date">28 septembre 2015</h3>
+        </section>
+                <section><section id="introduction" class="titleslide slide level1"><h1>Introduction</h1></section><section id="les-origines" class="slide level2">
+<h1>Les origines</h1>
+<p>GO a été développé par Google en 2007</p>
+<ul>
+<li>Robert Griesemer : V8 JS engine, GFS distributed FS</li>
+<li>Rob Pike : Plan 9, UTF8</li>
+<li>Kenneth Thompson : Unix, langages B et C</li>
+</ul>
+<figure>
+<img src="img/ken-n-dennis.jpg" alt="Ken &amp; Dennis" /><figcaption>Ken &amp; Dennis</figcaption>
+</figure>
+</section><section id="evolution" class="slide level2">
+<h1>Evolution</h1>
+<figure>
+<img src="img/golang-trend.png" alt="" />
+</figure>
+</section><section id="en-bref" class="slide level2">
+<h1>En bref</h1>
+<p><em>GO is an open source, compiled, garbage-collected, concurrent system programming language</em></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">++</th>
+<th style="text-align: left;">--</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><ul>
+<li>simple, rapide</li>
+<li>concurrent</li>
+<li>librairie standard</li>
+</ul></td>
+<td style="text-align: left;"><ul>
+<li>outillage (IDE, GDB)</li>
+<li>majuscule = <em>public</em></li>
+<li>packages / dépendances</li>
+</ul></td>
+</tr>
+</tbody>
+</table>
+</section><section id="ping-pong" class="slide level2">
+<h1>Ping-pong</h1>
+<pre class="go" include="src/00-pingpong/ping.src"><code>package main
+import (
+	&quot;fmt&quot;
+	&quot;time&quot;
+)
+type Ball struct{ hits int }
+
+func main() {
+	table := make(chan *Ball)
+	go player(&quot;ping&quot;, table)
+	go player(&quot;pong&quot;, table)
+
+	table &lt;- new(Ball) // game on; toss the ball
+	time.Sleep(1 * time.Second)
+	&lt;-table // game over; grab the ball
+}
+</code></pre>
+</section><section id="player" class="slide level2">
+<h1>Player</h1>
+<pre class="go" include="src/00-pingpong/pong.src"><code>func player(name string, table chan *Ball) {
+	for {
+		ball := &lt;-table
+		ball.hits++
+		fmt.Println(name, ball.hits)
+		time.Sleep(100 * time.Millisecond)
+		table &lt;- ball
+	}
+}
+</code></pre>
+<p><a href="http://play.golang.org/p/s5GrMDeEI0">Go Playground</a></p>
+</section></section>
+<section><section id="installation" class="titleslide slide level1"><h1>Installation</h1></section><section id="il-vous-faut" class="slide level2">
+<h1>Il vous faut</h1>
+<ul>
+<li><a href="https://golang.org/dl/">Go</a> 1.5.1</li>
+<li><a href="https://www.jetbrains.com/idea/download/">IntelliJ IDEA</a> 14.1.5</li>
+<li><a href="https://github.com/go-lang-plugin-org/go-lang-idea-plugin">go-lang-idea-plugin</a> #485</li>
+</ul>
+<p>Slides: <a href="http://hackingmondays.github.io/golang-slides/" class="uri">http://hackingmondays.github.io/golang-slides/</a></p>
+<pre><code>golang-slides [https://github.com/HackingMondays/golang-slides]
+  +---src
+  |   +---00-pingpong
+  |   +---01-fail
+  |   +---02-pass
+      ...
+  golang-slides.html</code></pre>
+</section><section id="configuration" class="slide level2">
+<h1>Configuration</h1>
+<h3 id="windows">Windows</h3>
+<pre class="sh"><code>REM # ni espaces, ni accents dans les chemins !
+set GOROOT=C:\Go
+set GOPATH=C:\src\gopath;C:\src\hacking\golang-slides
+set PATH=%PATH%;%GOROOT%\bin;C:\src\gopath\bin</code></pre>
+<h3 id="mac-unix">Mac / Unix</h3>
+<pre class="sh"><code>export GOROOT=/usr/local/go
+export GOPATH=$HOME/src/gopath:$HOME/src/hacking/golang-slides
+export PATH=$PATH:$GOROOT/bin:$HOME/src/gopath/bin
+
+# MacOS only
+launchctl setenv GOROOT $GOROOT
+launchctl setenv GOPATH $GOPATH</code></pre>
+</section><section id="gopath" class="slide level2">
+<h1>GOPATH</h1>
+<pre><code>$~/src/gopath
+.
+├── bin
+│   └── gocode
+├── pkg
+│   └── darwin_amd64
+└── src
+    ├── code.google.com
+    ├── github.com
+    ├── golang.org
+    └── gopkg.in
+        ├── check.v1
+        └── qml.v1
+            ├── README.md
+            ├── qml.go
+                ...</code></pre>
+</section><section id="check-console" class="slide level2">
+<h1>Check Console</h1>
+<pre class="sh"><code>go version
+
+go env
+
+cd src/00-pingpong
+go run pingpong.go
+go build -o pipo
+./pipo
+
+# download and install into $GOPATH (requires mercurial)
+go get golang.org/x/tools/cmd/vet
+go get golang.org/x/tools/cmd/godoc
+godoc -http=:6060 &amp;</code></pre>
+<p>documentation : <a href="http://localhost:6060/" class="uri">http://localhost:6060/</a></p>
+</section><section id="plugin-idea" class="slide level2">
+<h1>Plugin IDEA</h1>
+<p>Installation à partir du disque :</p>
+<pre><code>File, Settings, Plugins, Install plugin from disk...
+    =&gt; Go.485.zip</code></pre>
+<p>Ou à partir du repo :</p>
+<pre><code>File, Settings, Plugins, Browse repositories...
+    Manage repositories
+        [+]
+            https://plugins.jetbrains.com/plugins/alpha/5047
+        OK
+        Repository: All =&gt; https://plugins.jetbrains.com/plugins/...
+            GO
+                Install Plugin, Yes, Restart</code></pre>
+</section><section id="check-idea" class="slide level2">
+<h1>Check IDEA</h1>
+<pre><code>Run, Edit Configurations, [+], Go Test</code></pre>
+<figure>
+<img src="img/idea-plugin-test.png" alt="" />
+</figure>
+</section></section>
+<section><section id="le-langage" class="titleslide slide level1"><h1>Le langage</h1></section><section id="chaines-de-caracteres" class="slide level2">
+<h1>Chaines de caracteres</h1>
+<pre class="go"><code>    myString := &quot;I&#39;m a string&quot;
+    myString = &quot;Hello &quot; + myString
+    fmt.Println(myString) // Hello I&#39;m a string</code></pre>
+</section><section id="types-numeriques" class="slide level2">
+<h1>Types numeriques</h1>
+<pre class="go"><code>    myInt := 2
+    myFloat := 1.2
+    otherFloat := float64(myInt) * myFloat
+    fmt.Println(otherFloat) // 2.4</code></pre>
+</section><section id="boucles" class="slide level2">
+<h1>Boucles</h1>
+<pre class="go"><code>    langages := []string{&quot;Go&quot;, &quot;Java&quot;, &quot;Ruby&quot;, &quot;Python&quot;}
+
+    for i, langage := range langages {
+        fmt.Println(langage, &quot;a le rang&quot;, i)
+    }</code></pre>
+<p>affiche :</p>
+<pre class="sh"><code>    Go a le rang 0
+    Java a le rang 1
+    Ruby a le rang 2
+    Python a le rang 3</code></pre>
+</section><section id="tableaux-associatifs" class="slide level2">
+<h1>Tableaux associatifs</h1>
+<pre class="go"><code>    starWarsYears := map[string]int{
+        &quot;A New Hope&quot;: 1977,
+        &quot;The Empire Strikes Back&quot;: 1980,
+        &quot;Revenge of the Sith&quot;: 2005,
+    }</code></pre>
+<p>ajout / suppression :</p>
+<pre class="go"><code>    starWarsYears[&quot;The Force Awakens&quot;] = 2015
+    delete(starWarsYears, &quot;Revenge of the Sith&quot;)</code></pre>
+<p>boucle :</p>
+<pre class="go"><code>    for title, year := range starWarsYears {
+        fmt.Println(title, &quot;was released in&quot;, year)
+    }</code></pre>
+</section><section id="fonctions" class="slide level2">
+<h1>Fonctions</h1>
+<p>visibilité :</p>
+<pre class="go"><code>func giveMePear(fruit string) // non visible en dehors du package
+func GiveMePear(fruit string) // visible en dehors du package</code></pre>
+<p>paramètres :</p>
+<pre class="go"><code>func giveMePear(fruit string) {
+    fruit = &quot;pear&quot;
+}
+
+func main() {
+    fruit := &quot;banana&quot;
+    giveMePear(fruit)
+    fmt.Println(fruit) // banana
+}</code></pre>
+</section><section id="pointeurs" class="slide level2">
+<h1>Pointeurs</h1>
+<pre class="go"><code>func giveMePear(fruit *string) {
+    *fruit = &quot;pear&quot;
+}
+
+func main() {
+    fruit := &quot;banana&quot;
+    giveMePear(&amp;fruit)
+    fmt.Println(fruit) // pear
+}</code></pre>
+</section><section id="structures" class="slide level2">
+<h1>Structures</h1>
+<pre class="go"><code>    type Movie struct {
+        Actors      []string
+        Rating      float32
+        ReleaseYear int
+        Title       string
+    }
+    episodeIV := Movie{
+        Title:       &quot;Star Wars: A New Hope&quot;,
+        Rating:      5.0,
+        ReleaseYear: 1977,
+    }</code></pre>
+<p>type methods :</p>
+<pre class="go"><code>func (movie Movie) DisplayTitle() string {
+    return fmt.Sprintf(&quot;%s (%d)&quot;, movie.Title, movie.ReleaseYear)
+}</code></pre>
+</section></section>
+<section><section id="exercices-1" class="titleslide slide level1"><h1>Exercices (1)</h1></section><section id="lets-go" class="slide level2">
+<h1>Let's GO</h1>
+<p>01-fail/main_test.go</p>
+<pre class="go" include="src/01-fail/main_test.go"><code>package main
+
+import (
+	&quot;testing&quot;
+)
+
+func TestHello(t *testing.T) {
+	t.Fail()
+}
+</code></pre>
+<p>Exécution</p>
+<pre><code>$ go test
+--- FAIL: TestHello (0.00s)
+FAIL
+exit status 1
+FAIL  _/Users/daniel/src/hacking/golang-slides/src/01-fail 0.004s</code></pre>
+</section><section id="a-vous-de-jouer" class="slide level2">
+<h1>A vous de jouer</h1>
+<p>02-pass/main_test.go</p>
+<pre class="go" include="src/02-pass/main_test.go"><code>package main
+
+import &quot;testing&quot;
+
+func TestHello(t *testing.T) {
+
+	// Expect function Hello() to return &quot;Hello&quot;
+	expected := &quot;Hello&quot;
+	actual := Hello()
+
+	if actual != expected {
+		t.Errorf(&quot;Expected: %q, was: %q&quot;, expected, actual)
+	}
+}
+</code></pre>
+</section><section id="slice" class="slide level2">
+<h1>Slice</h1>
+<p>02-pass/main.go.sol2</p>
+<pre class="go" include="src/02-pass/main.go.sol2"><code>package main
+
+var slice = []byte{&#39;H&#39;, &#39;e&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;, &#39;W&#39;, &#39;o&#39;, &#39;r&#39;, &#39;l&#39;, &#39;d&#39;}
+
+func main() {}
+
+func Hello() string {
+	return string(slice[:5])
+}
+</code></pre>
+</section><section id="for-range" class="slide level2">
+<h1>for / range</h1>
+<p>02-pass/main.go.sol3</p>
+<pre class="go" include="src/02-pass/main.go.sol3"><code>package main
+
+var slice = []byte{&#39;H&#39;, &#39;W&#39;, &#39;e&#39;, &#39;o&#39;, &#39;l&#39;, &#39;r&#39;, &#39;l&#39;, &#39;l&#39;, &#39;o&#39;, &#39;d&#39;}
+
+func main() {}
+
+func Hello() string {
+	var result string
+	for i, c := range slice {
+		if i%2 == 0 {
+			result += string(c)
+		}
+	}
+	return result
+}
+</code></pre>
+</section><section id="json" class="slide level2">
+<h1>JSON</h1>
+<p>03-json/main_test.go</p>
+<pre class="go" include="src/03-json/main_test.go"><code>package main
+
+import &quot;testing&quot;
+
+const jsonAsString = `{&quot;EN&quot;:&quot;Hello&quot;, &quot;DE&quot;:&quot;Guten Tag&quot;}`
+
+func TestHello(t *testing.T) {
+
+	// Expect Hello() to return the German greeting
+	expected := &quot;Guten Tag&quot;
+	actual := Hello(jsonAsString)
+
+	if actual != expected {
+		t.Errorf(&quot;Expected: %q, was: %q&quot;, expected, actual)
+	}
+}
+</code></pre>
+</section><section id="parser-json-1" class="slide level2">
+<h1>Parser JSON 1</h1>
+<p>version brute force...</p>
+<p>03-json/main.go</p>
+<pre class="go" include="src/03-json/main.go.sol1"><code>package main
+
+import &quot;regexp&quot;
+
+func main() {}
+
+func Hello(rawJSON string) string {
+	exp := regexp.MustCompile(`[&quot;]DE[&quot;]:[&quot;]([A-Za-z ]+)`)
+	return exp.FindStringSubmatch(rawJSON)[1]
+}
+</code></pre>
+<p><code>encoding/json : json.Unmarshal()</code></p>
+</section><section id="parser-json-2" class="slide level2">
+<h1>Parser JSON 2</h1>
+<p>03-json/main.go</p>
+<pre class="go" include="src/03-json/main.go.sol2"><code>package main
+
+import &quot;encoding/json&quot;
+
+func main() {}
+
+type Greetings struct {
+	EN string
+	DE string
+}
+
+func Hello(rawJSON string) string {
+	var greetings *Greetings
+	json.Unmarshal([]byte(rawJSON), &amp;greetings)
+	return greetings.DE
+}
+</code></pre>
+</section><section id="parser-json-3" class="slide level2">
+<h1>Parser JSON 3</h1>
+<p>03-json/main.go</p>
+<pre class="go" include="src/03-json/main.go.sol3"><code>package main
+
+import &quot;encoding/json&quot;
+
+func main() {}
+
+type Greetings struct {
+	English string `json:&quot;EN&quot;`
+	German  string `json:&quot;DE&quot;`
+}
+
+func Hello(rawJSON string) string {
+	var greetings *Greetings
+	json.Unmarshal([]byte(rawJSON), &amp;greetings)
+	return greetings.German
+}
+</code></pre>
+</section><section id="interfaces" class="slide level2">
+<h1>Interfaces</h1>
+<p>04-interface/main_test.go</p>
+<pre class="go" include="src/04-interface/main_test.go"><code>package main
+
+import &quot;testing&quot;
+
+func TestHello(t *testing.T) {
+	testCase(t, &amp;EnglishSpeaker{}, &quot;Hello&quot;)
+	testCase(t, &amp;GermanSpeaker{&quot;Morgen&quot;}, &quot;Guten Morgen&quot;)
+	testCase(t, &amp;GermanSpeaker{&quot;Abend&quot;}, &quot;Guten Abend&quot;)
+}
+
+func testCase(t *testing.T, speaker Speaker, expected string) {
+	// call function Hello() on interface Speaker
+	actual := speaker.Hello()
+
+	if actual != expected {
+		t.Errorf(&quot;Expected: %q, was: %q&quot;, expected, actual)
+	}
+}
+</code></pre>
+</section><section id="type-struct" class="slide level2">
+<h1>type / struct</h1>
+<p>04-interface/main.go</p>
+<pre class="go" include="src/04-interface/main.go.sol"><code>package main
+func main() {}
+
+type Speaker interface {
+	Hello() string
+}
+
+type EnglishSpeaker struct{}
+type GermanSpeaker struct {
+	greeting string
+}
+
+func (*EnglishSpeaker) Hello() string {
+	return &quot;Hello&quot;
+}
+func (gs *GermanSpeaker) Hello() string {
+	return &quot;Guten &quot; + gs.greeting
+}
+</code></pre>
+</section></section>
+<section><section id="exercices-2" class="titleslide slide level1"><h1>Exercices (2)</h1></section><section id="service-web" class="slide level2">
+<h1>Service Web</h1>
+<p>Code source en Node.js :</p>
+<pre class="nodejs" include="src/05-web/server.js"><code>var console = require(&quot;console&quot;),
+my_http = require(&quot;http&quot;);
+
+my_http.createServer(function(request,response){
+    console.log(&quot;Got kicked at:&quot;, request.url);
+    response.writeHeader(200, {&quot;Content-Type&quot;: &quot;text/plain&quot;});
+    response.write(&quot;Hello World&quot;);
+    response.end();
+}).listen(8080);
+
+console.log(&quot;Server Running on 8080&quot;);
+</code></pre>
+<p>Exécuter avec : <code>node server.js</code></p>
+</section><section id="httptest" class="slide level2">
+<h1>httptest</h1>
+<p>05-web/web_test.go</p>
+<pre class="go" include="src/05-web/main_test.go"><code>package main
+
+import &quot;net/http&quot;
+import &quot;net/http/httptest&quot;
+import &quot;testing&quot;
+
+func TestHello(t *testing.T) {
+	recorder := httptest.NewRecorder()
+	request, _ := http.NewRequest(&quot;GET&quot;, &quot;http://dummy&quot;, nil)
+	myHandler(recorder, request)
+
+	expected := &quot;Hello World&quot;
+	actual := recorder.Body.String()
+	if actual != expected {
+		t.Errorf(&quot;Expected: %q, was: %q&quot;, expected, actual)
+	}
+}
+</code></pre>
+</section><section id="http" class="slide level2">
+<h1>http</h1>
+<p>05-web/web.go</p>
+<pre class="go" include="src/05-web/main.go.sol"><code>package main
+
+import &quot;log&quot;
+import &quot;io&quot;
+import &quot;net/http&quot;
+
+const port = &quot;:8080&quot;
+
+func main() {
+	log.Println(&quot;Server Running on&quot;, port)
+	http.HandleFunc(&quot;/&quot;, myHandler)
+	startServer()
+}
+
+func startServer() {
+	err := http.ListenAndServe(port, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func myHandler(response http.ResponseWriter, request *http.Request) {
+	log.Println(&quot;Got kicked at:&quot;, request.URL)
+	io.WriteString(response, &quot;Hello World&quot;)
+}
+</code></pre>
+</section><section id="go-vs-node.js" class="slide level2">
+<h1>GO vs Node.js</h1>
+<pre><code>GO                                         Node.js
+----------------------------------------   ----------------------------
+Concurrency Level:     500                   500
+Time taken for tests:  0.910 seconds         2.617 seconds
+Complete requests:     500                   500
+Failed requests:       0                     0
+Total transferred:     64000 bytes           56000 bytes
+HTML transferred:      5500 bytes            5500 bytes
+Requests per second:   549.42 [#/sec]        191.07 [#/sec]
+Time per request:      910.052 [ms] (mean)   2616.873 [ms] (mean)
+Time per request:      1.820 [ms]            5.234 [ms]
+Transfer rate:         68.68 [Kbytes/sec]    20.90 [Kbytes/sec]
+
+Connection Times (ms)                      Connection Times (ms)
+              min  mean[+/-sd] med  max      min  mean[+/-sd] med   max
+Connect:        0    1  22.3     0  498        0    1  23.6     0   528
+Processing:   304  491 151.4   556  848      559 1460 290.5  1302  2041
+Waiting:      303  485 148.6   539  847      559 1460 290.6  1302  2041
+Total:        304  493 152.0   556  849      559 1461 291.7  1302  2041
+
+Percentage of the requests served          Percentage of the requests
+  50%    556                                 50%   1302
+  66%    561                                 66%   1662
+  75%    564                                 75%   1719
+  80%    569                                 80%   1771
+  90%    585                                 90%   1823
+  95%    831                                 95%   1827
+  98%    836                                 98%   1831
+  99%    838                                 99%   2026
+ 100%    849 (longest request)              100%   2041 (longest)</code></pre>
+<p><code>ab -c 500 -n 500 http://localhost:8080/</code></p>
+</section><section id="grep-en-go" class="slide level2">
+<h1>Grep en GO</h1>
+<p>on a :</p>
+<pre><code>$ grep --regexp=^root passwd
+root:*:0:0:System Administrator:/var/root:/bin/sh</code></pre>
+<p>on veut :</p>
+<pre><code>$ go run main.go --regexp=^root passwd
+root:*:0:0:System Administrator:/var/root:/bin/sh</code></pre>
+</section><section id="flag" class="slide level2">
+<h1>flag</h1>
+<p>06-io/main.go</p>
+<pre class="go" include="src/06-io/flag.src"><code>var pattern string
+
+func init() {
+	flag.StringVar(&amp;pattern, &quot;regexp&quot;, &quot;&quot;, &quot;Specify a pattern&quot;)
+}
+
+func main() {
+	flag.Parse()
+	grep(pattern, flag.Args()[0])
+}
+</code></pre>
+</section><section id="os-bufio" class="slide level2">
+<h1>os / bufio</h1>
+<p>06-io/main.go</p>
+<pre class="go" include="src/06-io/fileopen.src"><code>func grep(fileName string) {
+	exp := regexp.MustCompile(pattern)
+
+	file, err := os.Open(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+        ...
+}
+</code></pre>
+</section></section>
+<section><section id="conclusion" class="titleslide slide level1"><h1>Conclusion</h1></section><section id="récapitulatif" class="slide level2">
+<h1>Récapitulatif</h1>
+<ul>
+<li>concurrence avec <code>go</code> et <code>chan</code></li>
+<li>package <code>testing</code></li>
+<li>slices, <code>for</code>, <code>range</code></li>
+<li><code>regex</code>, <code>encoding/json</code></li>
+<li><code>type</code>, <code>struct</code>, <code>interface</code></li>
+<li><code>net/http</code>, <code>io</code></li>
+<li><code>flag</code></li>
+<li><code>os</code>, <code>bufio</code></li>
+</ul>
+</section><section id="go-1.5" class="slide level2">
+<h1>Go 1.5</h1>
+<p>Sortie en août 2015</p>
+<ul>
+<li>Go écrit entièrement en Go</li>
+<li>Garbage collector concurrent</li>
+<li>Analyse (<code>callgraph</code>) et refactoring (<code>go rename</code>)</li>
+<li>Support Android et iOS (expérimental)</li>
+</ul>
+</section><section id="quelques-liens" class="slide level2">
+<h1>Quelques liens</h1>
+<ul>
+<li><a href="http://talks.golang.org/2015/state-of-go-may.slide#1">State of GO (May 2015)</a></li>
+<li><a href="http://yager.io/programming/go.html">Why Go Is Not Good</a></li>
+<li><a href="https://github.com/golang/go/wiki/Projects">Go Projects</a></li>
+<li><a href="http://nathany.com/go-packages/">Go Package management</a></li>
+<li><a href="https://www.digitalocean.com/company/blog/get-your-development-team-started-with-go/">Get your development team started with Go</a></li>
+<li><a href="http://dave.cheney.net/resources-for-new-go-programmers">Resources for new Go programmers</a></li>
+</ul>
+</section></section>
+<section><section id="merci" class="titleslide slide level1"><h1>Merci</h1></section></section>
+    </div>
+</div>
+
+<script src="reveal.js/lib/js/head.min.js"></script>
+<script src="reveal.js/js/reveal.js"></script>
+
+<script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        slideNumber: true,
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+		dependencies: [
+			{ src: "reveal.js/lib/js/classList.js", condition: function() { return !document.body.classList; } },
+			{ src: "reveal.js/plugin/markdown/marked.js", condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: "reveal.js/plugin/markdown/markdown.js", condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: "reveal.js/plugin/highlight/highlight.js", async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: "reveal.js/plugin/zoom-js/zoom.js", async: true },
+			{ src: "reveal.js/plugin/notes/notes.js", async: true }
+		]
+      });
+
+
+</script>
+</body>
+
+<footer>#HackingMondays</footer>
+
+</html>

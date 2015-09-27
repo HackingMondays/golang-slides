@@ -20,7 +20,6 @@ build
 target
 logs
 *.log
-*.html
 *.exe
 src/05-web/web
 
